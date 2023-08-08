@@ -18,7 +18,6 @@ async function emailValidate(email,phone){
     let userobj=false;
     const user=await User.findAll({where: {email:email}})
     if(user.length>0){
-            console.log(user[0])
             if(user[0].phone==phone){
                 phoneflag=true
             }else{
@@ -26,9 +25,6 @@ async function emailValidate(email,phone){
                 phoneflag = user[0].phone
                 userobj=user
             }
-        
-        
-
     }else{
         console.log("No User Found",user)
     }

@@ -30,7 +30,7 @@ async function submitForm(e){
         
         console.log(res.data.token)
         localStorage.setItem('token',res.data.token)
-        window.location.replace("./expense.html");
+        window.location.replace("./index.html");
     }
     
 
