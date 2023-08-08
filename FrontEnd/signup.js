@@ -45,7 +45,7 @@ async function submitForm(e){
     }
     else{
         alert("User created Successfully")
-        //window.location.replace("./login.html");
+        window.location.replace("./login.html");
     }
 
 }
