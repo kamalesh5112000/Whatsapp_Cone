@@ -2,13 +2,23 @@ const express = require('express');
 const User = require('../models/users');
 const sequelize=require('../database/database');
 const bcrypt=require('bcrypt');
+const jwt = require('jsonwebtoken');
 
+
+
+
+
+function generateAccessToken(id,nam){
+    return jwt.sign({ userId:id,name: nam},'secretkey')
+
+}
 async function emailValidate(email,phone){
     let emailflag=false;
     let phoneflag=false;
     let userobj=false;
-    await User.findAll({where: {email:email}}).then(user=>{
-        if(user.length>0){
+    const user=await User.findAll({where: {email:email}})
+    if(user.length>0){
+            console.log(user[0])
             if(user[0].phone==phone){
                 phoneflag=true
             }else{
@@ -16,11 +26,14 @@ async function emailValidate(email,phone){
                 phoneflag = user[0].phone
                 userobj=user
             }
-        }
+        
+        
 
-    })
-    return [emailflag,phoneflag,userobj]
-
+    }else{
+        console.log("No User Found",user)
+    }
+    console.log("data returned")
+    return [emailflag,phoneflag,userobj];
 }
 exports.addUser=async (req,res,next)=>{
     try{
@@ -59,4 +72,37 @@ exports.addUser=async (req,res,next)=>{
     }
     
     
+}
+
+exports.loginUser=async (req,res,next)=>{
+    try{
+        const email = req.body.email;
+        const password = req.body.password;
+        const [emailflag,passwordflag,userobj]=await emailValidate(email,password)
+
+        
+        if(emailflag){
+            const userPassword=userobj[0].password;
+            bcrypt.compare(password,userPassword,(err,response)=>{
+                if(!err){
+                    if(response){
+                        res.status(203).json({message:"Successfully Logged In",token:generateAccessToken(userobj[0].id,userobj[0].name)})
+                    }else{
+                        res.status(201).json({message:"Password Incorrect"})
+        
+                    }
+                }else{
+                    console.log(err)
+                }
+
+            })
+            console.log("User Exit")
+        }else{
+            console.log('No User Found')
+            res.status(202).json({message:"Email Doesn't Exists"})
+
+        }
+
+    }catch(err){
+    }
 }
