@@ -9,9 +9,11 @@ const bodyParser=require('body-parser');
 const sequelize=require('./database/database');
 
 const user = require('./models/users');
+const chats = require('./models/chats');
 
 const userRoute=require('./routes/userRoute')
-
+const chatRoute=require('./routes/chatRoute');
+const { TSConstructorType } = require('babel-types');
 
 const app = express();
 
@@ -23,6 +25,10 @@ app.use(cors({
 }));
 
 app.use(userRoute)
+app.use(chatRoute)
+
+user.hasMany(chats);
+chats.belongsTo(user);
 
 sequelize.sync().then(result=>{
     //console.log(result);
