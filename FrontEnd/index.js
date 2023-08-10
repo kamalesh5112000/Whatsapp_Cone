@@ -19,13 +19,36 @@ async function sendMessage(e){
     display();
 }
 display()
+let lastMessageId=undefined;
 async function display(){
+
     const token = localStorage.getItem('token');
 
     async function fetchMessages() {
-        const res = await axios.get('http://localhost:3000/getmsg',{headers:{"Authorization":token}});
-        msgarea.innerText='';
-        showchat(res.data)
+        const isScrolledToBottom = msgarea.scrollHeight - msgarea.scrollTop === msgarea.clientHeight;
+        const res = await axios.get(`http://localhost:3000/getmsg?lastMsgId=${lastMessageId}`,{headers:{"Authorization":token}});
+        if(res.data.chat.length>0){
+            let existingMessages = JSON.parse(localStorage.getItem('msg')) || [];
+            console.log("existing data",existingMessages)
+            if(existingMessages.chat.length>0){
+                console.log("existing data inside if",existingMessages.chat)
+                existingMessages.chat.push(...res.data.chat);
+                console.log("new Data",existingMessages.chat)
+
+            }else{
+                existingMessages=res.data
+            }
+            console.log("outside if",existingMessages.chat)
+
+            // Add new messages to the existing array
+            
+            localStorage.setItem('msg',JSON.stringify(existingMessages));
+            lastMessageId=res.data.chat[res.data.chat.length-1].id;
+            loadFromLS();
+        }
+        if (isScrolledToBottom) {
+            msgarea.scrollTop = msgarea.scrollHeight;
+        }
 
     }
 
@@ -58,3 +81,11 @@ function showchat(obj){
     }
 
 }
+function loadFromLS(){
+
+    const obj= JSON.parse(localStorage.getItem('msg'))
+    msgarea.innerText='';
+    console.log(obj)
+    showchat(obj)
+}
+

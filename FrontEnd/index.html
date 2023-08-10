@@ -13,13 +13,17 @@
         header{
             margin-top: 2%;
         }
+        #msgarea {
+  height: 520px; /* Set an appropriate height */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
     </style>
     <title>Chat App</title>
 </head>
 <body>
     <h1 style="text-align: center;">Chat App</h1>
     <br>
-    <div style="margin-left: 20%; margin-right: 20%; border: 10px;" id="msgarea">
+    <div  style="margin-left: 20%; margin-right: 20%; border: 10px;" id="msgarea">
 
     </div>
     <div class="fixed-bottom d-flex justify-content-center">
@@ -29,7 +33,6 @@
               id="msgField"
               class="form-control"
               placeholder="Enter the message"
-              onkeydown="handleKeyDown(event)"
             />
             <button id="sendbtn" class="btn btn-primary" type="button" id="button-addon1" data-mdb-ripple-color="dark">
               Send
