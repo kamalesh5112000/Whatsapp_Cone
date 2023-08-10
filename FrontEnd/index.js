@@ -3,20 +3,35 @@ var senBtn=document.getElementById('sendbtn');
 var msgarea=document.getElementById('msgarea');
 
 senBtn.addEventListener('click',sendMessage);
+msg.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+      sendMessage(event);
+      event.preventDefault();
+    }
+  });
 async function sendMessage(e){
     e.preventDefault();
     console.log(msg.value)
     const token = localStorage.getItem('token');
     const res = await axios.post('http://localhost:3000/addmsg',{msg:msg.value},{headers:{"Authorization":token}});
     msg.value='';
-    msgarea.innerText='';
+    
     display();
 }
 display()
 async function display(){
     const token = localStorage.getItem('token');
-    const res = await axios.get('http://localhost:3000/getmsg',{headers:{"Authorization":token}});
-    showchat(res.data)
+
+    async function fetchMessages() {
+        const res = await axios.get('http://localhost:3000/getmsg',{headers:{"Authorization":token}});
+        msgarea.innerText='';
+        showchat(res.data)
+
+    }
+
+    // Call the fetchMessages function every 1 second
+    const intervalId = setInterval(fetchMessages, 1000);
+    
 }
 function showchat(obj){
     for(let i=0;i<obj.chat.length;i++){

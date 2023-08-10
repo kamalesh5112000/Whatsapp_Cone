@@ -19,7 +19,7 @@
 <body>
     <h1 style="text-align: center;">Chat App</h1>
     <br>
-    <div style="margin-left: 20%; margin-right: 20%; background-color: beige;" id="msgarea">
+    <div style="margin-left: 20%; margin-right: 20%; border: 10px;" id="msgarea">
 
     </div>
     <div class="fixed-bottom d-flex justify-content-center">
@@ -28,12 +28,13 @@
               type="text"
               id="msgField"
               class="form-control"
-              placeholder="Enter the massage"
+              placeholder="Enter the message"
+              onkeydown="handleKeyDown(event)"
             />
             <button id="sendbtn" class="btn btn-primary" type="button" id="button-addon1" data-mdb-ripple-color="dark">
-                Send
+              Send
             </button>
-        </div>
+          </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <script src="index.js"></script>
