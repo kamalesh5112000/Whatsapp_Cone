@@ -1,22 +1,18 @@
 const express= require('express');
-
-
 const dotenv=require('dotenv');
 dotenv.config();
-
 const cors = require('cors');
 const bodyParser=require('body-parser');
 const sequelize=require('./database/database');
-
 const user = require('./models/users');
 const chats = require('./models/chats');
-
+const groups=require('./models/groups');
+const userGroup=require('./models/userGroup');
 const userRoute=require('./routes/userRoute')
 const chatRoute=require('./routes/chatRoute');
-const { TSConstructorType } = require('babel-types');
+const groupRoute=require('./routes/groupRoute');
 
 const app = express();
-
 
 app.use(bodyParser.json({ extended: false }));
 app.use(cors({
@@ -26,11 +22,20 @@ app.use(cors({
 
 app.use(userRoute)
 app.use(chatRoute)
+app.use(groupRoute)
 
 user.hasMany(chats);
 chats.belongsTo(user);
 
-sequelize.sync().then(result=>{
+groups.hasMany(chats);
+
+user.belongsToMany(groups, { through: userGroup }); // Corrected association
+groups.belongsToMany(user, { through: userGroup }); // Corrected association
+userGroup.belongsTo(user);
+userGroup.belongsTo(groups);
+
+
+sequelize.sync().then(result => {
     //console.log(result);
     app.listen(process.env.PORT || 3000);
-}).catch(err=>console.log(err));
+}).catch(err => console.log(err));
